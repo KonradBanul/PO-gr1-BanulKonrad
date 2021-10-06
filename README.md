@@ -1,1 +1,1 @@
-# PO-gr1-BanulKonrad
+# programowanie obiektowe 
