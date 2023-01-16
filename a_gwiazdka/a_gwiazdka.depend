@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1673910749 source:c:\users\brzoz\desktop\programy\roboty\a_gwiazdka\main.cpp
+	<fstream>
+	<iostream>
+	<math.h>
+
