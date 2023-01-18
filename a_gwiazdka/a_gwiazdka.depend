@@ -1,5 +1,5 @@
 # depslib dependency file v1.0
-1673992490 source:c:\users\brzoz\desktop\programy\roboty\a_gwiazdka\main.cpp
+1674008372 source:c:\users\brzoz\desktop\programy\roboty\a_gwiazdka\main.cpp
 	<fstream>
 	<iostream>
 	<math.h>

@@ -8,8 +8,8 @@ const int wym_x = 21;
 const int wym_y = 21;
 const int start_x = 20;
 const int start_y = 20;
-const int cel_x = 1;
-const int cel_y = 3;
+const int cel_x = 4;
+const int cel_y = 20;
 double g[wym_x][wym_y] = {}; //tablica z kosztami poszczegolnych ruchow
 double f[wym_x][wym_y] = {}; //tablica f = g + h
 int direction[wym_x][wym_y]; //tablica z kierunkami
@@ -50,6 +50,14 @@ int main() {
         cout<<"Start lub cel znajduje sie na scianie!"<<endl;
         return 0;
     }
+    if (start_x == cel_x && start_y == cel_y) { //sprawdzenie czy start jest w celu
+        cout<<"Jestes juz u celu"<<endl;
+        return 0;
+    }
+    if (start_x < 0 || start_y > wym_x || start_y < 0 || start_x > wym_y || cel_x < 0 || cel_y > wym_x || cel_y < 0 || cel_x > wym_y) { //sprawdzenie czy jestesmy na mapie
+        cout<<"Jestes poza mapa"<<endl;
+        return 0;
+    }
 	while (!(lista[start_x][start_y] == 0)) { //rozpoczecie algorytmu
 		if (x == cel_x && y == cel_y) {
 			while (!(x == start_x && y == start_y)) { //rysowanie sciezki
@@ -63,7 +71,7 @@ int main() {
 			wypisz(tab); //wypisanie gotowej sciezki
 			break;
 		}
-		else if (!(x < 0 || y > wym_x || y < 0 || x > wym_y )) { //sprawdzenie czy jestesmy na mapie
+		else {
 			lista[x][y] = 2; //wartosc dla listy ktora bedzie oznaczac odwiedzony element
             if (tab[x][y + 1] == 0 && (lista[x][y + 1] == 0 )) { //poruszanie sie w cztery strony
                 lista[x][y + 1] = 1;
@@ -90,14 +98,10 @@ int main() {
                 direction[x + 1][y] = 4;
             }
         }
-        else {
-            cout<<"Jestes poza mapa!"<<endl;
-            return 0;
-        }
         float mini = INT_MAX; //szukanie najmniejszych wartosci
         for (int i = 1; i < wym_x; i++) {
 			for (int j = 1; j < wym_y; j++) {
-				if (lista[i][j] == 1) {
+				if (lista[i][j] == 1 && tab[i][j] != 5) {
 					if (mini >= f[i][j]) {
 						mini = f[i][j];
 						x = i;
@@ -105,6 +109,10 @@ int main() {
 					}
 				}
 			}
+		}
+		if (mini == INT_MAX) { //jesli nie mozna wyszukac najmniejszej wartosci to nie da sie znalezc sciazki
+            cout<<"Nie da sie znalezc sciezki"<<endl;
+            return 0;
 		}
 	}
     return 0;
