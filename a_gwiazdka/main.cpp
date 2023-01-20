@@ -6,9 +6,9 @@ using namespace std;
 
 const int wym_x = 21;
 const int wym_y = 21;
-const int start_x = 20;
-const int start_y = 20;
-const int cel_x = 4;
+const int start_x = 1;
+const int start_y = 1;
+const int cel_x = 20;
 const int cel_y = 20;
 double g[wym_x][wym_y] = {}; //tablica z kosztami poszczegolnych ruchow
 double f[wym_x][wym_y] = {}; //tablica f = g + h
@@ -38,11 +38,6 @@ int main() {
             plik>>tab[i][j];
     plik.close();
 
-	for (int i = 1; i < wym_x; i++) { //liczenie kazdego elementu z heurystyki
-		for (int j = 1; j < wym_y; j++){
-            h[i][j] = licz_h(i, j);
-		}
-	}
     int x = start_x; //deklaracja elementow ktore beda skladaly sie na sciezke
     int y = start_y;
 	lista[start_x][start_y] = 1;
@@ -58,14 +53,29 @@ int main() {
         cout<<"Jestes poza mapa"<<endl;
         return 0;
     }
+	for (int i = 1; i < wym_x; i++) { //liczenie kazdego elementu z heurystyki
+		for (int j = 1; j < wym_y; j++){
+            h[i][j] = licz_h(i, j);
+		}
+	}
 	while (!(lista[start_x][start_y] == 0)) { //rozpoczecie algorytmu
 		if (x == cel_x && y == cel_y) {
 			while (!(x == start_x && y == start_y)) { //rysowanie sciezki
 				tab[x][y] = 3;
-                if (direction[x][y] == 1) y -= 1; //poruszanie sie w cztery strony
-                else if (direction[x][y] == 2) y += 1;
-                else if (direction[x][y] == 3) x += 1;
-                else if (direction[x][y] == 4) x -= 1;
+                switch (direction[x][y]) { //powrot w cztery strony
+                    case 1:
+                        y -= 1;
+                        break;
+                    case 2:
+                        y += 1;
+                        break;
+                    case 3:
+                        x += 1;
+                        break;
+                    case 4:
+                        x -= 1;
+                        break;
+                }
                 tab[x][y] = 3;
 			}
 			wypisz(tab); //wypisanie gotowej sciezki
@@ -73,32 +83,32 @@ int main() {
 		}
 		else {
 			lista[x][y] = 2; //wartosc dla listy ktora bedzie oznaczac odwiedzony element
-            if (tab[x][y + 1] == 0 && (lista[x][y + 1] == 0 )) { //poruszanie sie w cztery strony
-                lista[x][y + 1] = 1;
-                g[x][y + 1] = g[x][y] + 1;
-                f[x][y + 1] = g[x][y + 1] + h[x][y + 1];
-                direction[x][y + 1] = 1;
+			if (tab[x][y + 1] == 0 && lista[x][y + 1] == 0) { //poruszanie sie w cztery strony
+                lista[x][y + 1] = 1; //element odwiedzany
+                g[x][y + 1] = g[x][y] + 1; //zwiekszenie wartosci kosztu ruchu
+                f[x][y + 1] = g[x][y + 1] + h[x][y + 1]; //obliczenie f = g + h
+                direction[x][y + 1] = 1; //wybor kierunku
             }
-            if (tab[x][y - 1] == 0 && (lista[x][y - 1] == 0 )) {
+            if (tab[x][y - 1] == 0 && lista[x][y - 1] == 0) {
                 lista[x][y - 1] = 1;
                 g[x][y - 1] = g[x][y] + 1;
                 f[x][y - 1] = g[x][y - 1] + h[x][y - 1];
-                direction[x][y - 1] = 2;
+                direction[x][y - 1] = 2; //przypisanie wartosci do kazdego kierunku
             }
-            if (tab[x - 1][y] == 0 && (lista[x - 1][y] == 0 )) {
+            if (tab[x - 1][y] == 0 && lista[x - 1][y] == 0) {
                 lista[x - 1][y] = 1;
                 g[x - 1][y] = g[x][y] + 1;
                 f[x - 1][y] = g[x - 1][y] + h[x - 1][y];
                 direction[x - 1][y] = 3;
             }
-            if (tab[x + 1][y] == 0 && (lista[x + 1][y] == 0 )) {
+            if (tab[x + 1][y] == 0 && lista[x + 1][y] == 0) {
                 lista[x + 1][y] = 1;
                 g[x + 1][y] = g[x][y] + 1;
                 f[x + 1][y] = g[x + 1][y] + h[x + 1][y];
                 direction[x + 1][y] = 4;
             }
         }
-        float mini = INT_MAX; //szukanie najmniejszych wartosci
+        double mini = INT_MAX; //szukanie najmniejszych wartosci
         for (int i = 1; i < wym_x; i++) {
 			for (int j = 1; j < wym_y; j++) {
 				if (lista[i][j] == 1 && tab[i][j] != 5) {
